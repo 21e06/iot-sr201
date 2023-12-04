@@ -1,0 +1,33 @@
+#!/bin/bash
+HOST="10.0.12.34"
+BOMB="/tmp/time.bomb"
+
+while true; do
+  if [ -f $BOMB ]; then
+    time=$(cat $BOMB; rm $BOMB)
+
+    if ! [[ $time =~ ^[0-9]+$ ]]; then
+      continue
+    fi
+
+    if [ $time -lt 1 ] || [ $time -gt 20 ]; then
+      continue
+    fi
+
+    RS=$(echo -n 11 | nc -w 1 $HOST 6722)
+
+    if ! [[ $RS -eq "10000000" ]]; then
+      continue
+    fi
+
+    sleep $time;
+
+    RS=$(echo -n 21 | nc -w 1 $HOST 6722)
+
+    if ! [[ $RS -eq "00000000" ]]; then
+      continue
+    fi
+
+  fi
+  sleep 1
+done
