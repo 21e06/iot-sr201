@@ -13,7 +13,7 @@ if ( !preg_match("/\d/", $n) ){
   exit(http_response_code(403));
 }
 
-if ( $n > 15 ) {
+if ( $n > 20 ) {
   exit(http_response_code(403));
 }
 
