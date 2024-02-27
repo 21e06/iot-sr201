@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<meta http-equiv="refresh" content="0; buttons.html">
   <meta charset="utf-8">
   <meta http-equiv="cache-control" content="no-store">
   <title>basic control page</title>
@@ -8,40 +9,23 @@
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/skeleton.css">
   <link rel="icon" type="image/png" href="images/favicon.png">
+  <style>
+  .container {
+    max-width: 400px;
+		display: none;
+  }
+  </style>
 </head>
 <body>
   <div class="container">
-    <h4>Pump Control Page</h4>
+    <h4>Select Pump Control</h4>
+    <hr>
     <div class="row">
-      <button class="button-primary u-full-width" onclick="com(10);">10 minutes</button>
+      <a class="button u-full-width" href="bitcoin.html">bitcoin</a>
     </div>
     <div class="row">
-      <button class="button-primary u-full-width" onclick="com(15);">15 minutes</button>
-    </div>
-    <div class="row">
-      <button class="button-primary u-full-width" onclick="com(20);">20 minutes</button>
-    </div>
-    <div class="row">
-      <button class="button-primary u-full-width" onclick="com(00);">turn off</button>
+      <a class="button u-full-width" href="buttons.html">buttons</a>
     </div>
   </div>
-
-  <script>
-  function com(n) {
-    let x = new XMLHttpRequest();
-
-    x.addEventListener('readystatechange', () => {
-
-      if( x.readyState === 4 ) {
-        if( x.status === 200 ) {
-        //...pump started
-        }
-      }
-    });
-
-    x.open('POST','com.php');
-    x.send(n);
-  }
-  </script>
 </body>
 </html>
