@@ -1,14 +1,15 @@
 <?php
 $req = $_SERVER['REQUEST_METHOD'];
+$tok = $_SERVER['HTTP_TOKEN'];
 $host = "10.0.12.34";
 $port = "6722";
 $token = "4e6eb420369156d6d3c30a0a1f52f418cd8c99f294dfe2a350a161a714af9693";
 
-if ( !isset($_SERVER['HTTP_TOKEN']) ) {
+if ( !isset($tok) ) {
 	exit(http_response_code(403));
 }
 
-if ( $_SERVER['HTTP_TOKEN'] !== $token ) {
+if ( hash('sha256', $tok) !== $token ) {
 	exit(http_response_code(401));
 }
 

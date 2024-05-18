@@ -96,9 +96,10 @@
 	<script src="https://cdn.jsdelivr.net/gh/OutCast3k/coinbin/js/crypto-sha256.js"></script>
   <script>
 	const t = "4e6eb420369156d6d3c30a0a1f52f418cd8c99f294dfe2a350a161a714af9693",
-				p = Crypto.SHA256(localStorage.getItem('token') || '');
+				p = localStorage.getItem('token') || '';
+				s = Crypto.SHA256(p);
 
-	if ( p !== t) {
+	if ( s !== t) {
 		console.log('invalid token');
 		window.location.assign('index.html');
 	}
