@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta http-equiv="refresh" content="0; buttons.html">
+	<!--<meta http-equiv="refresh" content="0; buttons.html">-->
   <meta charset="utf-8">
   <meta http-equiv="cache-control" content="no-store">
   <title>basic control page</title>
@@ -10,22 +10,79 @@
   <link rel="stylesheet" href="css/skeleton.css">
   <link rel="icon" type="image/png" href="images/favicon.png">
   <style>
+	body { background: #222; }
   .container {
     max-width: 400px;
-		display: none;
+		margin-top: 10%;
+		padding: 1em;
+		background: rgba(50,50,50,0.5);
+		border-radius: 10px;
   }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h4>Select Pump Control</h4>
-    <hr>
-    <div class="row">
-      <a class="button u-full-width" href="bitcoin.html">bitcoin</a>
-    </div>
-    <div class="row">
-      <a class="button u-full-width" href="buttons.html">buttons</a>
-    </div>
-  </div>
+<div class="container">
+	<div class="row">
+		<input class="u-full-width" type="password" placeholder="password">
+	</div>
+	<div class="row">
+		<button class="button-primary u-full-width"> login </button>
+	</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/OutCast3k/coinbin/js/crypto-sha256.js"></script>
+<script>
+	const t = "4e6eb420369156d6d3c30a0a1f52f418cd8c99f294dfe2a350a161a714af9693",
+				p = Crypto.SHA256(localStorage.getItem('token') || ''),
+				a = "buttons.html";
+
+	if ( p === t) {
+		window.location.assign(a);
+	}
+
+	document.querySelector('button').addEventListener('click', e => {
+		login();
+	});
+
+	document.addEventListener('keyup', e => {
+		if ( e.keyCode !== 13 ) {
+			return;
+		}
+
+		login();		
+	});
+
+	function login() {
+		let x = document.querySelector('input').value,
+				s = Crypto.SHA256(x);
+
+		if ( Crypto.SHA256(s) === t ) {
+			localStorage.setItem('token', s);
+			window.location.assign(a);
+			return;
+		}
+
+		console.log('invalid token');
+	}
+
+	function newbg() {
+		var src = `/images/random/${innerWidth}x${innerHeight}?nature=${Date.now()}`;
+
+		fetch(src)
+		.then(x => x.blob())
+		.then(o => {
+			var f = new FileReader();
+
+			f.onload = x => {
+				document.body.style.background = `center no-repeat fixed url(${f.result}) rgb(56,56,56)`;
+				setTimeout(newbg, 30000);
+			}
+
+			f.readAsDataURL(o);
+		});
+	}
+
+	document.addEventListener('DOMContentLoaded', newbg);
+</script>
 </body>
 </html>

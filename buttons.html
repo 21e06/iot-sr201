@@ -23,9 +23,12 @@
 		background: rgba(50,50,50,0.5);
 		border-radius: 10px;
   }
+
+	body { background: #222; }
+
   h4 {
     font-family: redwater, sans-serif;
-		font-size: 1.8em;
+		font-size: 1.6em;
 		background: #2a87d8;
 		text-align: center;
 		border-radius: 6px 6px 0 0;
@@ -74,41 +77,57 @@
   <div class="container">
     <h4>water pump ctrl</h4>
     <div class="row">
-      <button class="button-primary u-full-width" onclick="com(3);"> 3 minutes</button>
+      <button class="button-primary u-full-width" data-min="6"> 3 minutes </button>
     </div>
     <div class="row">
-      <button class="button-primary u-full-width" onclick="com(10);">10 minutes</button>
+      <button class="button-primary u-full-width" data-min="6"> 6 minutes </button>
     </div>
     <div class="row">
-      <button class="button-primary u-full-width" onclick="com(15);">15 minutes</button>
+      <button class="button-primary u-full-width" data-min="9"> 9 minutes </button>
     </div>
     <div class="row">
-      <button class="button-primary u-full-width" onclick="com(20);">20 minutes</button>
+      <button class="red __________ u-full-width" data-min="0"> turn off </button>
     </div>
-    <div class="row">
-      <button class="red u-full-width" onclick="com(0);">turn off</button>
-    </div>
-    <div class="row">
-      <button class="orange u-full-width" onclick="location.href='bitcoin.html';">bitcoin</button>
+    <div class="row" style="display:none;">
+      <button class="orange u-full-width" onclick="location.href='bitcoin.html';"> bitcoin </button>
     </div>
   </div>
 
+	<script src="https://cdn.jsdelivr.net/gh/OutCast3k/coinbin/js/crypto-sha256.js"></script>
   <script>
-  function com(n) {
-    let x = new XMLHttpRequest();
+	const t = "4e6eb420369156d6d3c30a0a1f52f418cd8c99f294dfe2a350a161a714af9693",
+				p = Crypto.SHA256(localStorage.getItem('token') || '');
 
-    x.addEventListener('readystatechange', () => {
+	if ( p !== t) {
+		console.log('invalid token');
+		window.location.assign('index.html');
+	}
 
-      if( x.readyState === 4 ) {
-        if( x.status === 200 ) {
-        //...pump started
-        }
-      }
-    });
+	document.querySelectorAll('button').forEach(btn => {
+		btn.addEventListener('click', e => {
+			let n = e.target.dataset.min,
+  	  		x = new XMLHttpRequest();
 
-    x.open('POST','com.php');
-    x.send(n);
-  }
+			let b = e.target;
+
+    	x.addEventListener('readystatechange', () => {
+      	if ( x.readyState === 4 ) {
+	        if ( x.status === 200 ) {
+						b.animate({opacity:[1,0]}, 999);
+						return;
+    	    }
+
+					if ( x.status !== 200 ) {
+						b.animate({transform: ["translatex(-15px)", "translatex(15px)"]}, 99);
+					}
+      	}
+    	});
+
+	    x.open('POST','relay.php');
+			x.setRequestHeader('token', p);
+    	x.send(n);
+		})
+	});
 
 	function newbg() {
 		var src = `/images/random/${innerWidth}x${innerHeight}?nature=${Date.now()}`;

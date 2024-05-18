@@ -2,6 +2,15 @@
 $req = $_SERVER['REQUEST_METHOD'];
 $host = "10.0.12.34";
 $port = "6722";
+$token = "4e6eb420369156d6d3c30a0a1f52f418cd8c99f294dfe2a350a161a714af9693";
+
+if ( !isset($_SERVER['HTTP_TOKEN']) ) {
+	exit(http_response_code(403));
+}
+
+if ( $_SERVER['HTTP_TOKEN'] !== $token ) {
+	exit(http_response_code(401));
+}
 
 if ( $req != "POST" ) {
   exit(http_response_code(403));
@@ -20,6 +29,15 @@ if ( $n > 20 ) {
 $n = $n * 60;
 $s = $n < 1 ? "2X" : "11:$n";
 
-$fp = @fsockopen($host, $port, $errcode, $errtxt, 1);
+$fp = @fsockopen($host, $port, $errcode, $errtxt, 10);
+
+if ( !$fp ) {
+	http_response_code(408);
+	exit;
+}
+
 fwrite($fp, $s);
+
+//echo fread($fp,8);
+
 fclose($fp);
