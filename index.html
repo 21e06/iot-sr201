@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<!--<meta http-equiv="refresh" content="0; buttons.html">-->
   <meta charset="utf-8">
   <meta http-equiv="cache-control" content="no-store">
   <title>basic control page</title>
@@ -18,6 +17,30 @@
 		background: rgba(50,50,50,0.5);
 		border-radius: 10px;
   }
+
+	button.a {
+		background: #07a4e5;
+		color: #fff;
+		border: 1px solid #07a4e5;
+	}
+
+	button.b {
+		background: #e58207;
+		color: #fff;
+		border: 1px solid #e58207;
+	}
+
+	.a:hover {
+		color: #fff;
+		border: 1px solid #07a4e5;
+		opacity: 0.9;
+	}
+
+	.b:hover {
+		color: #fff;
+		border: 1px solid #e58207;
+		opacity: 0.9;
+	}
   </style>
 </head>
 <body>
@@ -26,22 +49,29 @@
 		<input class="u-full-width" type="password" placeholder="password">
 	</div>
 	<div class="row">
-		<button class="button-primary u-full-width"> login </button>
+		<button class="button a u-full-width"> login </button>
+	</div>
+	<div class="row">
+		<button class="button b u-full-width"> pay </button>
 	</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/gh/OutCast3k/coinbin/js/crypto-sha256.js"></script>
 <script>
-	const t = "4e6eb420369156d6d3c30a0a1f52f418cd8c99f294dfe2a350a161a714af9693",
+	const	t = "e0544a80a086d6c1e61766a4a451bbeeb53a03bac201f4c9fff9c9c9cc694b30",
 				p = Crypto.SHA256(localStorage.getItem('token') || ''),
-				a = "buttons.html";
+				a = atob('Yi5odG1s');
 
 	if ( p === t) {
 		window.location.assign(a);
 	}
 
-	document.querySelector('button').addEventListener('click', e => {
+	document.querySelector('button.a').addEventListener('click', e => {
 		login();
+	});
+
+	document.querySelector('button.b').addEventListener('click', e => {
+		location.assign(atob('cC5odG1s'));
 	});
 
 	document.addEventListener('keyup', e => {

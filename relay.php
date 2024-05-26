@@ -3,7 +3,7 @@ $req = $_SERVER['REQUEST_METHOD'];
 $tok = $_SERVER['HTTP_TOKEN'];
 $host = "10.0.12.34";
 $port = "6722";
-$token = "4e6eb420369156d6d3c30a0a1f52f418cd8c99f294dfe2a350a161a714af9693";
+$token = "e0544a80a086d6c1e61766a4a451bbeeb53a03bac201f4c9fff9c9c9cc694b30";
 
 if ( !isset($tok) ) {
 	exit(http_response_code(403));

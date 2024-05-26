@@ -62,7 +62,7 @@
 		color: #fff;
 	}
 
-	#qrdisp {
+	#qrc {
 		text-align: center;
 		background-color: #fff;
 		border-radius: 4px;
@@ -80,15 +80,20 @@
 	 <label for="amount">minimum PHP1.00, maximum PHP10.00</label>
 	 <input type="range" id="amount" min="1" max="10" value="5" class="u-full-width" oninput="init();">
 	 <br>
-	 <button class="orange u-full-width" id="paybtn">pay to start pumping</button>
-	 <div id="qrdisp"></div>
+	 <button class="orange u-full-width">pay to start</button>
+	 <div id="qrc"></div>
 	 <progress id="invexp" value="100" max="100"></progress>
 </div>
 
 <script>
-var clicked = false, ref = Math.random().toString(32).substr(2,8), exp = 3599;
+const	exp = 3599;
+			qrc = document.getElementById('qrc'),
+			ref = Math.random().toString(32).substr(2,8),
+			btn = document.querySelector('button.orange');
 
-paybtn.addEventListener('click',()=> {
+var clicked = false;
+
+btn.addEventListener('click',()=> {
 	let amt = amount.value;
 
 	if ( clicked ) return;
@@ -101,7 +106,7 @@ paybtn.addEventListener('click',()=> {
 	if ( !(amt > 0 && amt < 11) )
 		return;
 
-	qrdisp.textContent = 'generating invoice...';
+	qrc.textContent = 'generating invoice...';
 	createInvoice(amt);
 })
 
@@ -113,15 +118,6 @@ function createInvoice(amt) {
 	})
 }
 
-function invoice1(d) {
-	let x = new XMLHttpRequest();
-
-	console.log(JSON.stringify(d));
-
-	x.open("POST", "https://ln.bohol.xyz/create-bolt11");
-	x.send(JSON.stringify(d));
-}
-
 function invoice(data) {
 	try{
 		fetch('https://ln.bohol.xyz/create-bolt11', {
@@ -129,18 +125,18 @@ function invoice(data) {
 			body: JSON.stringify(data),
 		}).then(r=>r.json()).then(r=> {
 			qrcode(r.bolt11);
-			check_payment(r.bolt11); 
+			checkInvoice(r.bolt11); 
 		})
 	} catch(e) {
-		qrdisp.textContent = 'error. please try again.';
+		qrc.textContent = 'error. please try again.';
 		clicked = false; console.log(e);
 	}
 }
 
-function check_payment(id) {
-	fetch(`https://ln.bohol.xyz/check-bolt11?bolt11=${id}`).then(r=>{
+function checkInvoice(bolt11) {
+	fetch(`https://ln.bohol.xyz/check-bolt11?bolt11=${bolt11}`).then(r=>{
 		if (r.status != 200) {
-			qrdisp.textContent = `invoice expired`;
+			qrc.textContent = `❌ invoice expired ❌`;
 			invexp.style.display = 'none'; clicked = false;
 			return false;
 		}
@@ -151,26 +147,29 @@ function check_payment(id) {
 		if ( !r ) return;
 
 		if ( r.status !== "completed" ) {
-			setTimeout(()=>check_payment(id), Math.ceil(Math.random() * 100) * 100);
+			setTimeout(()=>checkInvoice(bolt11), Math.ceil(Math.random() * 100) * 100);
 			return;
 		}
 
-		qrdisp.textContent = `invoice ${ref} paid`;
-
+		paidInvoice(bolt11); qrc.textContent = `✅ invoice paid ✅`; invexp.style.display = 'none';
 	});
+}
+
+function paidInvoice(bolt11) {
+	fetch('bolt.php?bolt11=' + bolt11);
 }
 
 function qrcode(bolt11) {
 	var to = exp, i = setInterval(()=>{ invexp.value = to-- / exp * 100; exp < 1 && clearInterval(i) },1000);
 
 	fetch(`https://o.bohol.xyz/qr/${bolt11}`).then(r=>r.text()).then(r=>{
-		qrdisp.innerHTML = r; invexp.style.display = 'block';
+		qrc.innerHTML = r; invexp.style.display = 'block';
 	});
 }
 
 function init() {
-	paybtn.textContent = `pay PHP${amount.value}.00 to start pumping`;
-	qrdisp.textContent = ''; clicked = false;
+	btn.textContent = `pay PHP${amount.value}.00 to start`;
+	qrc.textContent = ''; clicked = false;
 }
 
 window.addEventListener('DOMContentLoaded', init);
