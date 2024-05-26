@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="cache-control" content="no-store">
+	<title>waterpump control</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="css/normalize.css">
+	<link rel="stylesheet" href="css/skeleton.css">
+	<link rel="icon" type="image/png" href="images/favicon.png">
+	<style>
+	@font-face {
+		font-family: redwater;
+		font-style: normal;
+		font-weight: 400;
+		src: url('css/redwater.woff') format('woff');
+	}
+
+	.container {
+		max-width: 400px;
+		padding: 1em;
+		margin-top: 1em;
+		background: rgba(50,50,50,0.5);
+		border-radius: 10px;
+	}
+
+	body { background: #222; }
+
+	h4 {
+		font-family: redwater, sans-serif;
+		font-size: 1.6em;
+		background: #2a87d8;
+		text-align: center;
+		border-radius: 6px 6px 0 0;
+		color: white;
+		padding: 10px 0 5px 0;
+		text-transform: uppercase;
+		margin-top: 0.5em;
+		animation: chc 5s infinite;
+	}
+
+	@keyframes chc {
+		from {
+			background-color: #75d8f7;
+		}
+		to {
+			background-color: #0198c8;
+		}
+	}
+
+	.orange {
+		background: #f09933;
+		border-color: #f09933;
+		color: #fff;
+	}
+
+	.orange:hover {
+		background: #e28921;
+		border-color: #e28921;
+		color: #fff;
+	}
+
+	.red:hover {
+		background: #e13c0d;
+		border-color: #e13c0d;
+		color: #fff;
+	}
+
+	.red {
+		background: #ef4818;
+		border-color: #ef4818;
+		color: #fff;
+	}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h4>water pump ctrl</h4>
+		<div class="row">
+			<button class="button-primary u-full-width" data-min="6"> 3 minutes </button>
+		</div>
+		<div class="row">
+			<button class="button-primary u-full-width" data-min="6"> 6 minutes </button>
+		</div>
+		<div class="row">
+			<button class="button-primary u-full-width" data-min="9"> 9 minutes </button>
+		</div>
+		<div class="row">
+			<button class="red __________ u-full-width" data-min="0"> turn off </button>
+		</div>
+		<div class="row" style="display:none;">
+			<button class="orange u-full-width" onclick="location.href='bitcoin.html';"> bitcoin </button>
+		</div>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/gh/OutCast3k/coinbin/js/crypto-sha256.js"></script>
+	<script>
+	const	t = "e0544a80a086d6c1e61766a4a451bbeeb53a03bac201f4c9fff9c9c9cc694b30",
+				p = localStorage.getItem('token') || '';
+				s = Crypto.SHA256(p);
+
+	if ( s !== t) {
+		console.log('invalid token');
+		window.location.assign('index.html');
+	}
+
+	document.querySelectorAll('button').forEach(btn => {
+		btn.addEventListener('click', e => {
+			let n = e.target.dataset.min,
+					x = new XMLHttpRequest();
+
+			let b = e.target;
+
+			x.addEventListener('readystatechange', () => {
+				if ( x.readyState === 4 ) {
+					if ( x.status === 200 ) {
+						b.animate({opacity:[1,0]}, 999);
+						return;
+					}
+
+					if ( x.status !== 200 ) {
+						b.animate({transform: ["translatex(-15px)", "translatex(15px)"]}, 99);
+					}
+				}
+			});
+
+			x.open('POST','relay.php');
+			x.setRequestHeader('token', p);
+			x.send(n);
+		})
+	});
+
+	function newbg() {
+		var src = `/images/random/${innerWidth}x${innerHeight}?nature=${Date.now()}`;
+
+		fetch(src)
+		.then(x => x.blob())
+		.then(o => {
+			var f = new FileReader();
+
+			f.onload = x => {
+				document.body.style.background = `center no-repeat fixed url(${f.result}) rgb(56,56,56)`;
+				setTimeout(newbg, 30000);
+			}
+
+			f.readAsDataURL(o);
+		});
+	}
+
+	document.addEventListener('DOMContentLoaded', newbg);
+	</script>
+</body>
+</html>
