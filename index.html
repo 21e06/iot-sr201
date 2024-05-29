@@ -96,7 +96,7 @@
 	}
 
 	function newbg() {
-		var src = `/images/random/${innerWidth}x${innerHeight}?nature=${Date.now()}`;
+		var src = `/images/random/${innerWidth}/${innerHeight}?grayscale`;
 
 		fetch(src)
 		.then(x => x.blob())
@@ -105,7 +105,7 @@
 
 			f.onload = x => {
 				document.body.style.background = `center no-repeat fixed url(${f.result}) rgb(56,56,56)`;
-				setTimeout(newbg, 30000);
+				setTimeout(newbg, Math.ceil(Math.random() * 1000 ) * 100);
 			}
 
 			f.readAsDataURL(o);
