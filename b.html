@@ -5,92 +5,86 @@
 	<meta http-equiv="cache-control" content="no-store">
 	<title>waterpump control</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="css/normalize.css">
-	<link rel="stylesheet" href="css/skeleton.css">
 	<link rel="icon" type="image/png" href="images/favicon.png">
 	<style>
-	@font-face {
-		font-family: redwater;
-		font-style: normal;
-		font-weight: 400;
-		src: url('css/redwater.woff') format('woff');
+	html, body {
+		background: #222;
+		color: #fff;
+		font-family: cursive, sans-serif;
+		margin: 5px;
+		padding: 0;
+		width: 100%;
+		user-select: none;
+	}
+
+	html { overflow: hidden; }
+
+	button {
+		background: #eee;
+		border: 1px solid #444;
+		color: #222;
+		cursor: pointer;
+		font-size: 10vw;
+		font-weight: bold;
+		height: 17%;
+		line-height: normal;
+		width: 32.8%;
+	}
+
+	button:hover {
+		opacity:0.9;
+	}
+
+	button[value="0"] {
+		color: transparent;
+		background-color: #ffa500;
+		background-image: url('/images/power.svg');
+		background-size: 25%;
+		background-repeat: no-repeat;
+		background-position: center;
+	}
+
+	@media screen and (max-width: 480px) {
+		button {
+			width: 30.8%;
+			font-size: 10vw;
+		}
+	}
+
+	@media screen and (max-width: 480px) and (min-height: 540px) {
+
+		body {
+			padding-top: 30%;
+		}
 	}
 
 	.container {
-		max-width: 400px;
-		padding: 1em;
-		margin-top: 1em;
-		background: rgba(50,50,50,0.5);
-		border-radius: 10px;
+		width: 100%;
+		border: 1px solid transparent;
 	}
 
-	body { background: #222; }
-
-	h4 {
-		font-family: redwater, sans-serif;
-		font-size: 1.6em;
-		background: #2a87d8;
-		text-align: center;
-		border-radius: 6px 6px 0 0;
-		color: white;
-		padding: 10px 0 5px 0;
-		text-transform: uppercase;
-		margin-top: 0.5em;
-		animation: chc 5s infinite;
-	}
-
-	@keyframes chc {
-		from {
-			background-color: #75d8f7;
-		}
-		to {
-			background-color: #0198c8;
-		}
-	}
-
-	.orange {
-		background: #f09933;
-		border-color: #f09933;
-		color: #fff;
-	}
-
-	.orange:hover {
-		background: #e28921;
-		border-color: #e28921;
-		color: #fff;
-	}
-
-	.red:hover {
-		background: #e13c0d;
-		border-color: #e13c0d;
-		color: #fff;
-	}
-
-	.red {
-		background: #ef4818;
-		border-color: #ef4818;
-		color: #fff;
+	.log {
+		background: #444;
+		color: #eee;
+		font-size: 0.75em;
+		margin: 1px;
+		padding: 10px;
+		visibility: hidden;
 	}
 	</style>
 </head>
 <body>
 	<div class="container">
-		<h4>water pump ctrl</h4>
-		<div class="row">
-			<button class="button-primary u-full-width" data-min="6"> 3 minutes </button>
-		</div>
-		<div class="row">
-			<button class="button-primary u-full-width" data-min="6"> 6 minutes </button>
-		</div>
-		<div class="row">
-			<button class="button-primary u-full-width" data-min="9"> 9 minutes </button>
-		</div>
-		<div class="row">
-			<button class="red __________ u-full-width" data-min="0"> turn off </button>
-		</div>
-		<div class="row" style="display:none;">
-			<button class="orange u-full-width" onclick="location.href='bitcoin.html';"> bitcoin </button>
-		</div>
+		<div class="log">...</div>
+		<button value="1"> 1 </button>
+		<button value="2"> 2 </button>
+		<button value="3"> 3 </button>
+		<button value="4"> 4 </button>
+		<button value="5"> 5 </button>
+		<button value="6"> 6 </button>
+		<button value="6"> 7 </button>
+		<button value="9"> 9 </button>
+		<button value="0"> 0 </button>
 	</div>
 
 	<script src="https://cdn.jsdelivr.net/gh/OutCast3k/coinbin/js/crypto-sha256.js"></script>
@@ -106,7 +100,7 @@
 
 	document.querySelectorAll('button').forEach(btn => {
 		btn.addEventListener('click', e => {
-			let n = e.target.dataset.min,
+			let n = e.target.value,
 					x = new XMLHttpRequest();
 
 			let b = e.target;
@@ -128,26 +122,17 @@
 			x.setRequestHeader('token', p);
 			x.send(n);
 		})
+
+		const log = document.querySelector('.log');
+
+		function screenlog() {
+			log.textContent = `screen size: ${innerWidth}x${innerHeight}`;
+		}
+
+		document.addEventListener('DOMContentLoaded', screenlog);
+
+		window.addEventListener('resize', screenlog);
 	});
-
-	function newbg() {
-		var src = `/images/random/${innerWidth}/${innerHeight}?grayscale`;
-
-		fetch(src)
-		.then(x => x.blob())
-		.then(o => {
-			var f = new FileReader();
-
-			f.onload = x => {
-				document.body.style.background = `center no-repeat fixed url(${f.result}) rgb(56,56,56)`;
-				setTimeout(newbg, Math.ceil(Math.random() * 1000 ) * 100);
-			}
-
-			f.readAsDataURL(o);
-		});
-	}
-
-	document.addEventListener('DOMContentLoaded', newbg);
 	</script>
 </body>
 </html>
