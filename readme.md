@@ -8,4 +8,4 @@
     echo -n "#89876,<dns>;" | nc <ip> 5111
     echo -n "#79876;" | nc <ip> 5111
 
-see [sr201 wiki](/cryxli/sr201/wiki)
+see [sr201 wiki](https://github.com/cryxli/sr201/wiki)

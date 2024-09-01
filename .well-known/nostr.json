@@ -1,0 +1,13 @@
+{
+	"names": {
+		"_": "854f40169d200d51e9108454074a53247f83076c68ec412c6fabac8a45043e1c"
+  },
+	"relays": {
+		"854f40169d200d51e9108454074a53247f83076c68ec412c6fabac8a45043e1c": [
+			"wss://relay.damus.io",
+			"wss://relay.nostr.band",
+			"wss://nos.lol",
+			"wss://nostr.fmt.wiz.biz"
+    ]
+	}
+}

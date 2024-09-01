@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="cache-control" content="no-store">
+	<title>&#x1F4A6;</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" type="image/png" href="images/favicon.png">
+	<style>
+	html, body {
+		background: #222;
+		color: #fff;
+		font-family: cursive, sans-serif;
+		margin: 5px;
+		padding: 0;
+		width: 100%;
+		user-select: none;
+	}
+
+	html { overflow: hidden; }
+
+	button {
+		background: #eee;
+		border: 1px solid #444;
+		color: #222;
+		cursor: pointer;
+		font-size: 10vw;
+		font-weight: bold;
+		height: 17%;
+		line-height: normal;
+		width: 32.8%;
+		outline: none;
+	}
+
+	button:hover {
+		opacity:0.9;
+	}
+
+	button[value="0"] {
+		color: transparent;
+		background-color: #ffa500;
+		background-image: url('/images/power.svg');
+		background-size: 25%;
+		background-repeat: no-repeat;
+		background-position: center;
+	}
+
+	button[value="t"] {
+		background-color: #eee;
+		color: #e2980d;
+	}
+
+	@media screen and (max-width: 480px) {
+		button {
+			width: 30.8%;
+			font-size: 10vw;
+		}
+	}
+
+	input[type="password"] {
+		font-size: 10vh;
+    border: 1px solid #342e2e;
+    background-color: #edebe7;
+    color: #111;
+    text-align: center;
+		width: 98.75%;
+	}
+
+	input:focus {
+		border: 1px solid #342e2e;
+		outline: none;
+		caret-color: #c1bdb5;
+	}
+
+	dialog {
+  	animation: fade-out 0.3s ease-out;
+	}
+
+	dialog[open] {
+		animation: fade-in 0.3s ease-out;
+		overflow: hidden;
+		background-color: #000000ab;
+	}
+
+	dialog[open]::backdrop {
+		background-color: #000000ab;
+	}
+
+	@keyframes fade-in {
+		0% {
+			opacity: 0;
+			transform: scaleY(0);
+			display: none;
+		}
+
+		100% {
+			opacity: 1;
+			transform: scaleY(1);
+			display: block;
+		}
+	}
+
+	@keyframes fade-out {
+	  0% {
+  	  opacity: 1;
+	    transform: scaleY(1);
+    	display: block;
+  	}
+
+	  100% {
+  	  opacity: 0;
+	    transform: scaleY(0);
+    	display: none;
+  	}
+	}
+
+	@media screen and (max-width: 480px) and (min-height: 540px) {
+
+		body {
+			padding-top: 30%;
+		}
+
+		input[type="password"] {
+			font-size: 2em !important;
+			width: 90%;
+		}
+	}
+
+	.container {
+		width: 100%;
+		border: 1px solid transparent;
+	}
+	</style>
+</head>
+<body>
+	<dialog>
+		<input type="password" placeholder="enter password"/>
+	</dialog>
+
+	<div class="container">
+		<button value="t"> T </button>
+		<button value="1"> 1 </button>
+		<button value="2"> 2 </button>
+		<button value="3"> 3 </button>
+		<button value="5"> 5 </button>
+		<button value="6"> 6 </button>
+		<button value="6"> 7 </button>
+		<button value="9"> 9 </button>
+		<button value="0"> 0 </button>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/gh/OutCast3k/coinbin/js/crypto-sha256.js"></script>
+	<script>
+	var d = document.querySelector('dialog'),
+			t = "e0544a80a086d6c1e61766a4a451bbeeb53a03bac201f4c9fff9c9c9cc694b30",
+			p = localStorage.token || t, s = Crypto.SHA256(p);
+
+	if ( s !== t) {
+		console.log('invalid token');	//d.showModal();
+	}
+
+	if ( typeof HTMLDialogElement === 'undefined' ) {
+		d.style.display = 'none';
+	}
+
+	function auth(s) {
+		localStorage.token = p = Crypto.SHA256(s);
+	}
+
+	document.querySelectorAll('button').forEach(btn => {
+		btn.addEventListener('click', e => {
+			let n = e.target.value,
+					x = new XMLHttpRequest();
+
+			let b = e.target;
+
+			x.addEventListener('readystatechange', () => {
+				if ( x.readyState === 4 ) {
+					if ( x.status === 200 ) {
+						b.animate({opacity:[1,0]}, 999);
+						return;
+					}
+
+					if ( x.status !== 200 ) {
+						//b.animate({transform: ["translatex(-15px)", "translatex(15px)"]}, 99);
+						if ( typeof HTMLDialogElement === 'undefined' ) {
+							d.style.display = 'block';
+							return;
+						}
+						d.showModal();
+					}
+				}
+			});
+
+			x.open('POST','relay.php');
+			x.setRequestHeader('token', p);
+			x.send(n);
+		})
+	});
+
+	var pw = document.querySelector('input');
+
+	pw.addEventListener('keyup', e => {
+		if ( e.keyCode !== 13 ) {
+			return;
+		}
+
+		if ( pw.value.length < 6 ) {
+			return;
+		}
+
+		auth(pw.value); pw.value = '';
+
+		if ( typeof HTMLDialogElement === 'undefined' ) {
+			d.style.display = 'none';
+		}
+
+		d.close();
+	})
+
+	d.onanimationend = e => pw.focus();
+	</script>
+</body>
+</html>
