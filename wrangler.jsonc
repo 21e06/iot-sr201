@@ -1,0 +1,14 @@
+{
+  "name": "iot-sr201",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-03-27",
+  "assets": {
+    "directory": "./public"
+  },
+  "observability": {
+    "logs": {
+      "enabled": true,
+      "invocation_logs": true
+    }
+  }
+}

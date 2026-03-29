@@ -1,0 +1,16 @@
+# /etc/systemd/system/bridge.service
+# sudo systemctl daemon-reexec
+# sudo systemctl enable bridge
+# sudo systemctl start bridge
+
+[Unit]
+Description=TCP Bridge
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/bridge
+Restart=always
+User=nobody
+
+[Install]
+WantedBy=multi-user.target
