@@ -1,0 +1,20 @@
+name               = "iot-sr201"
+main               = "src/worker.js"
+compatibility_date = "2026-03-27"
+
+[assets]
+directory = "./public"
+
+[observability.logs]
+enabled          = true
+invocation_logs  = true
+
+# VPC service binding — proxies commands to the local SR-201 bridge daemon
+[[vpc_services]]
+binding    = "VPC_SERVICE"
+service_id = "019d085b-026a-71d0-905f-3a4b9cafbe22"
+remote     = true
+
+# Secrets — set via CLI, never committed to source control:
+#   wrangler secret put PASSWORD    (login password, e.g. rocket21)
+#   wrangler secret put JWT_SECRET  (signing key for HS256 JWT tokens)
