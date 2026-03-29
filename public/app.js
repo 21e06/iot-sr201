@@ -52,10 +52,13 @@ function connectWS() {
 
   ws.onmessage = (e) => {
     try {
-      const { state } = JSON.parse(e.data);
-      if (state === 'on' || state === 'off') {
-        setStatus(state);
-        if (state === 'off') stopCountdown();
+      const { state, remaining } = JSON.parse(e.data);
+      if (state === 'on') {
+        setStatus('on');
+        if (remaining > 0) startCountdown(remaining);
+      } else if (state === 'off') {
+        setStatus('off');
+        stopCountdown();
       }
     } catch {}
   };

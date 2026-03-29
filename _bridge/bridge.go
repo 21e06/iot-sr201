@@ -62,9 +62,10 @@ func (h *hub) broadcast(msg []byte) {
 // ── Relay state ───────────────────────────────────────────────────────────────
 
 type relayState struct {
-	mu    sync.Mutex
-	state string // "on" | "off"
-	timer *time.Timer
+	mu       sync.Mutex
+	state    string // "on" | "off"
+	timer    *time.Timer
+	timerEnd time.Time
 }
 
 func newRelayState() *relayState { return &relayState{state: "off"} }
@@ -75,21 +76,23 @@ func (rs *relayState) turnOn(seconds int, h *hub) {
 		rs.timer.Stop()
 	}
 	rs.state = "on"
+	rs.timerEnd = time.Now().Add(time.Duration(seconds) * time.Second)
 	rs.timer = time.AfterFunc(time.Duration(seconds)*time.Second, func() {
 		var broadcast bool
 		rs.mu.Lock()
 		if rs.state == "on" {
 			rs.state = "off"
 			rs.timer = nil
+			rs.timerEnd = time.Time{}
 			broadcast = true
 		}
 		rs.mu.Unlock()
 		if broadcast {
-			h.broadcast(stateMsg("off"))
+			h.broadcast(stateMsg("off", 0))
 		}
 	})
 	rs.mu.Unlock()
-	h.broadcast(stateMsg("on"))
+	h.broadcast(stateMsg("on", seconds))
 }
 
 func (rs *relayState) turnOff(h *hub) {
@@ -99,18 +102,26 @@ func (rs *relayState) turnOff(h *hub) {
 		rs.timer = nil
 	}
 	rs.state = "off"
+	rs.timerEnd = time.Time{}
 	rs.mu.Unlock()
-	h.broadcast(stateMsg("off"))
+	h.broadcast(stateMsg("off", 0))
 }
 
-func (rs *relayState) current() string {
+func (rs *relayState) snapshot() (string, int) {
 	rs.mu.Lock()
 	defer rs.mu.Unlock()
-	return rs.state
+	if rs.state == "on" {
+		rem := int(time.Until(rs.timerEnd).Seconds())
+		if rem < 0 {
+			rem = 0
+		}
+		return "on", rem
+	}
+	return "off", 0
 }
 
-func stateMsg(state string) []byte {
-	b, _ := json.Marshal(map[string]string{"state": state})
+func stateMsg(state string, remaining int) []byte {
+	b, _ := json.Marshal(map[string]interface{}{"state": state, "remaining": remaining})
 	return b
 }
 
@@ -185,8 +196,9 @@ func wsHandler(h *hub, rs *relayState) http.HandlerFunc {
 		h.register(conn)
 
 		// Send current state to the newly connected client.
+		state, rem := rs.snapshot()
 		conn.SetWriteDeadline(time.Now().Add(WS_WRITE_WAIT))
-		conn.WriteMessage(websocket.TextMessage, stateMsg(rs.current()))
+		conn.WriteMessage(websocket.TextMessage, stateMsg(state, rem))
 		conn.SetWriteDeadline(time.Time{})
 
 		// Read loop — keeps the connection alive and detects client disconnect.
