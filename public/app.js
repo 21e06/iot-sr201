@@ -6,6 +6,10 @@ const btnOff     = document.getElementById('btnOff');
 const duration   = document.getElementById('duration');
 const message    = document.getElementById('message');
 
+const savedDuration = localStorage.getItem('sr201_duration');
+if (savedDuration) duration.value = savedDuration;
+duration.addEventListener('change', () => localStorage.setItem('sr201_duration', duration.value));
+
 let token = localStorage.getItem('sr201_token');
 let ws = null;
 let wsReconnectTimer = null;
