@@ -12,51 +12,46 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="SR-201" />
-  <!-- iOS requires a PNG apple-touch-icon; SVG is ignored -->
   <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
-  <!-- Favicon: SVG for modern browsers, PNG fallback -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
   <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
-  <div id="loginCard" class="login-card">
-    <div class="login-title">SR-201</div>
-    <div class="divider"></div>
-    <input class="login-input" type="password" id="loginPassword" placeholder="Password" autocomplete="current-password" />
-    <button class="btn-login" id="btnLogin">Unlock</button>
-    <div class="divider"></div>
-    <div class="login-error" id="loginError"></div>
+
+  <div id="loginCard" class="login-screen">
+    <div class="login-form">
+      <div class="brand">SR-201</div>
+      <div class="divider"></div>
+      <input class="text-input" type="password" id="loginPassword" placeholder="Password" autocomplete="current-password" />
+      <button class="btn-primary" id="btnLogin">Unlock</button>
+      <div class="login-error" id="loginError"></div>
+    </div>
   </div>
 
-  <div id="remoteCard" class="remote" style="display:none">
-    <div class="brand">SR-201</div>
+  <div id="remoteCard" class="remote-screen" style="display:none">
+    <header class="app-header">
+      <div class="brand">SR-201</div>
+      <div class="indicator-row">
+        <div class="led" id="led"></div>
+        <div class="status-text" id="statusText">—</div>
+      </div>
+    </header>
 
-    <div class="indicator-row">
-      <div class="led" id="led"></div>
-      <div class="status-text" id="statusText">—</div>
-    </div>
+    <main class="app-main">
+      <div class="timer" id="timer">—</div>
+      <button class="btn-toggle" id="btnToggle">ON</button>
+    </main>
 
-    <div class="divider"></div>
-
-    <div class="duration-row">
-      <span class="duration-label">On Duration (sec)</span>
-      <input class="duration-input" type="number" id="duration" min="1" max="86400" value="3600" />
-    </div>
-
-    <div class="timer" id="timer">—</div>
-
-    <div class="buttons">
-      <button class="btn btn-on" id="btnOn">ON</button>
-      <button class="btn btn-off" id="btnOff">OFF</button>
-    </div>
-
-    <div class="divider"></div>
-
-    <div class="message" id="message"></div>
+    <footer class="app-footer">
+      <div class="duration-row">
+        <span class="duration-label">Duration (sec)</span>
+        <input class="text-input" type="number" id="duration" min="1" max="86400" value="3600" />
+      </div>
+      <div class="message" id="message"></div>
+      <button class="btn-logout" id="btnLogout">Logout</button>
+    </footer>
   </div>
-
-  <button class="btn-logout" id="btnLogout" style="display:none">Logout</button>
 
   <script src="/app.js" defer></script>
 </body>

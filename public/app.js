@@ -1,8 +1,7 @@
 const led        = document.getElementById('led');
 const statusText = document.getElementById('statusText');
 const timerEl    = document.getElementById('timer');
-const btnOn      = document.getElementById('btnOn');
-const btnOff     = document.getElementById('btnOff');
+const btnToggle  = document.getElementById('btnToggle');
 const duration   = document.getElementById('duration');
 const message    = document.getElementById('message');
 
@@ -14,6 +13,7 @@ let token = localStorage.getItem('sr201_token');
 let ws = null;
 let wsReconnectTimer = null;
 
+let currentState = null;
 let countdownEnd = null;
 let countdownInterval = null;
 
@@ -82,7 +82,6 @@ function showLogin() {
   disconnectWS();
   document.getElementById('loginCard').style.display = '';
   document.getElementById('remoteCard').style.display = 'none';
-  document.getElementById('btnLogout').style.display = 'none';
   document.getElementById('loginError').textContent = '';
   document.getElementById('loginPassword').value = '';
 }
@@ -90,7 +89,6 @@ function showLogin() {
 function showApp() {
   document.getElementById('loginCard').style.display = 'none';
   document.getElementById('remoteCard').style.display = '';
-  document.getElementById('btnLogout').style.display = '';
   connectWS();
 }
 
@@ -127,9 +125,17 @@ document.getElementById('btnLogout').addEventListener('click', showLogin);
 if (token) { showApp(); } else { showLogin(); }
 
 function setStatus(state) {
+  currentState = state;
   led.className = 'led ' + state;
   statusText.className = 'status-text ' + state;
   statusText.textContent = state === 'on' ? 'ON' : state === 'off' ? 'OFF' : '—';
+  if (state === 'on') {
+    btnToggle.textContent = 'OFF';
+    btnToggle.classList.add('state-on');
+  } else {
+    btnToggle.textContent = 'ON';
+    btnToggle.classList.remove('state-on');
+  }
 }
 
 function setMessage(text, type = '') {
@@ -138,8 +144,7 @@ function setMessage(text, type = '') {
 }
 
 async function sendCommand(seconds) {
-  btnOn.disabled = true;
-  btnOff.disabled = true;
+  btnToggle.disabled = true;
   setMessage('Sending…');
 
   try {
@@ -171,18 +176,19 @@ async function sendCommand(seconds) {
   } catch (err) {
     setMessage(err.message, 'error');
   } finally {
-    btnOn.disabled = false;
-    btnOff.disabled = false;
+    btnToggle.disabled = false;
   }
 }
 
-btnOn.addEventListener('click', () => {
-  const secs = parseInt(duration.value, 10);
-  if (!secs || secs < 1) { setMessage('Enter a valid duration', 'error'); return; }
-  sendCommand(secs);
+btnToggle.addEventListener('click', () => {
+  if (currentState === 'on') {
+    sendCommand(0);
+  } else {
+    const secs = parseInt(duration.value, 10);
+    if (!secs || secs < 1) { setMessage('Enter a valid duration', 'error'); return; }
+    sendCommand(secs);
+  }
 });
-
-btnOff.addEventListener('click', () => sendCommand(0));
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js');
