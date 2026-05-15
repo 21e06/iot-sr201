@@ -152,6 +152,25 @@ body {
 }
 .timer.active { color: var(--on); }
 
+/* ── Spinner ────────────────────────────────────── */
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  width: clamp(60px, 15vw, 80px);
+  height: clamp(60px, 15vw, 80px);
+  border: 3px solid var(--border);
+  border-top: 3px solid var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+.spinner.hidden {
+  display: none;
+}
+
 /* ── Toggle Button ──────────────────────────────── */
 
 .btn-toggle {
@@ -165,11 +184,19 @@ body {
   letter-spacing: 4px;
   text-transform: uppercase;
   user-select: none;
-  transition: transform 0.1s, box-shadow 0.15s;
+  transition: transform 0.1s, box-shadow 0.15s, opacity 0.5s, scale 0.5s;
   /* default / off state: shows "ON" action */
   background: linear-gradient(145deg, #00e676, #00b248);
   color: #003d1a;
   box-shadow: 0 8px 40px rgba(0,230,118,0.45), inset 0 1px 0 rgba(255,255,255,0.25);
+  opacity: 0;
+  scale: 0.3;
+  pointer-events: none;
+}
+.btn-toggle.visible {
+  opacity: 1;
+  scale: 1;
+  pointer-events: auto;
 }
 .btn-toggle:active:not(:disabled) { transform: scale(0.93); }
 .btn-toggle:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }

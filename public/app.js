@@ -2,6 +2,7 @@ const led        = document.getElementById('led');
 const statusText = document.getElementById('statusText');
 const timerEl    = document.getElementById('timer');
 const btnToggle  = document.getElementById('btnToggle');
+const spinner    = document.getElementById('spinner');
 const duration   = document.getElementById('duration');
 const message    = document.getElementById('message');
 
@@ -14,6 +15,7 @@ let ws = null;
 let wsReconnectTimer = null;
 
 let currentState = null;
+let buttonShown = false;
 let countdownEnd = null;
 let countdownInterval = null;
 
@@ -129,6 +131,13 @@ function setStatus(state) {
   led.className = 'led ' + state;
   statusText.className = 'status-text ' + state;
   statusText.textContent = state === 'on' ? 'ON' : state === 'off' ? 'OFF' : '—';
+
+  if (!buttonShown) {
+    spinner.classList.add('hidden');
+    btnToggle.classList.add('visible');
+    buttonShown = true;
+  }
+
   if (state === 'on') {
     btnToggle.textContent = 'OFF';
     btnToggle.classList.add('state-on');
